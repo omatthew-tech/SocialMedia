@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="welcome-message">
+    <h2>Welcome to our Social Media platform!</h2>
+    <p>Please <a href="{% url 'login' %}">log in</a> or <a href="{% url 'signup' %}">sign up</a> to continue.</p>
+</div>
+{% endblock %}

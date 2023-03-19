@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% for post in posts %}
+<div class="post">
+<h3>{{ post.user.username }}</h3>
+<p>{{ post.text }}</p>
+{% if post.image %}
+<img src="{{ post.image.url }}" alt="post image">
+{% endif %}
+<p>Likes: {{ post.like_count|default:0 }}
+</p>
+<form action="{% url 'like_post' post.id %}" method="POST">
+{% csrf_token %}
+<button type="submit" class="btn btn-primary">Like</button>
+</form>
+<h4><a href="#" class="comment-link">Comment</a></h4>
+<div class="comment-section" style="display:none;">
+{% for comment in post.comment_set.all %}
+<p>{{ comment.user.username }}: {{ comment.text }}</p>
+{% empty %}
+<p>No comments yet.</p>
+{% endfor %}
+<form action="{% url 'create_comment' post.id %}" method="POST">
+{% csrf_token %}
+{{ comment_form.as_p }}
+<button type="submit" class="btn btn-primary">Post Comment</button>
+</form>
+</div>
+</div>
+{% endfor %}
+
+<script>
+    // JavaScript to show/hide comment section on click
+    document.querySelectorAll(".comment-link").forEach(function(link) {
+        link.addEventListener("click", function(event) {
+            event.preventDefault();
+            var commentSection = this.parentNode.nextElementSibling;
+            if (commentSection.style.display === "none") {
+                commentSection.style.display = "block";
+            } else {
+                commentSection.style.display = "none";
+            }
+        });
+    });
+</script>
+{% endblock %}
+
+
