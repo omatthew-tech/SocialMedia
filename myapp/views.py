@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
-from .models import Post, Comment, Like, Follow
+from .models import Post, Comment, Like, Follow, Vote
 from .forms import PostForm, CommentForm
 from django.contrib.auth.decorators import user_passes_test
 
@@ -75,6 +75,17 @@ def like_post(request, post_id):
     else:
         like = Like(post=post, user=request.user)
         like.save()
+    return redirect('home')
+
+@login_required
+def vote_post(request, post_id):
+    post = Post.objects.get(id=post_id)
+    vote = Vote.objects.filter(post=post, user=request.user).first()
+    if vote:
+        vote.delete()
+    else:
+        vote = Vote(post=post, user=request.user)
+        vote.save()
     return redirect('home')
 
 @user_passes_test(lambda user: not user.is_authenticated, login_url='home', redirect_field_name=None)

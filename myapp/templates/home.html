@@ -9,12 +9,19 @@
 {% if post.image %}
 <img src="{{ post.image.url }}" alt="post image">
 {% endif %}
-<p>Likes: {{ post.like_count|default:0 }}
-</p>
+<p>Likes: {{ post.like_count|default:0 }}</p>
+
 <form action="{% url 'like_post' post.id %}" method="POST">
 {% csrf_token %}
 <button type="submit" class="btn btn-primary">Like</button>
 </form>
+<p>Votes: {{ post.vote_count|default:0 }}</p>
+
+<form action="{% url 'vote_post' post.id %}" method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Vote</button>
+    </form>
+
 <h4><a href="#" class="comment-link">Comment</a></h4>
 <div class="comment-section" style="display:none;">
 {% for comment in post.comment_set.all %}

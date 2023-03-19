@@ -9,6 +9,9 @@ class Post(models.Model):
 
     def like_count(self):
         return Like.objects.filter(post=self).count()
+    
+    def vote_count(self):
+        return Vote.objects.filter(post=self).count()
 
 
 class Comment(models.Model):
@@ -18,6 +21,11 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class Vote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
