@@ -4,37 +4,41 @@
 
 {% for post in posts %}
 <div class="post">
-<h3>{{ post.user.username }}</h3>
-<p>{{ post.text }}</p>
-{% if post.image %}
-<img src="{{ post.image.url }}" alt="post image">
-{% endif %}
-<p>Likes: {{ post.like_count|default:0 }}</p>
+    <h3>{{ post.user.username }}</h3>
+    <p>{{ post.text }}</p>
+    {% if post.image %}
+    <img src="{{ post.image.url }}" alt="post image">
+    {% endif %}
+    
+    <!-- Wrap buttons and their text within a div container -->
+    <div class="buttons-container">
+        <form action="{% url 'like_post' post.id %}" method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Like</button>
+        <span>{{ post.like_count|default:0 }}</span>
+        </form>
 
-<form action="{% url 'like_post' post.id %}" method="POST">
-{% csrf_token %}
-<button type="submit" class="btn btn-primary">Like</button>
-</form>
-<p>Votes: {{ post.vote_count|default:0 }}</p>
+        <form action="{% url 'vote_post' post.id %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Vote</button>
+            <span>{{ post.vote_count|default:0 }}</span>
+        </form>
 
-<form action="{% url 'vote_post' post.id %}" method="POST">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-primary">Vote</button>
-    </form>
-
-<h4><a href="#" class="comment-link">Comment</a></h4>
-<div class="comment-section" style="display:none;">
-{% for comment in post.comment_set.all %}
-<p>{{ comment.user.username }}: {{ comment.text }}</p>
-{% empty %}
-<p>No comments yet.</p>
-{% endfor %}
-<form action="{% url 'create_comment' post.id %}" method="POST">
-{% csrf_token %}
-{{ comment_form.as_p }}
-<button type="submit" class="btn btn-primary">Post Comment</button>
-</form>
-</div>
+        <h4><a href="#" class="comment-link">Comment</a></h4>
+    </div>
+    
+    <div class="comment-section" style="display:none;">
+        {% for comment in post.comment_set.all %}
+        <p>{{ comment.user.username }}: {{ comment.text }}</p>
+        {% empty %}
+        <p>No comments yet.</p>
+        {% endfor %}
+        <form action="{% url 'create_comment' post.id %}" method="POST">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <button type="submit" class="btn btn-primary">Post Comment</button>
+        </form>
+    </div>
 </div>
 {% endfor %}
 
@@ -43,7 +47,8 @@
     document.querySelectorAll(".comment-link").forEach(function(link) {
         link.addEventListener("click", function(event) {
             event.preventDefault();
-            var commentSection = this.parentNode.nextElementSibling;
+            var postContainer = this.closest(".post");
+            var commentSection = postContainer.querySelector(".comment-section");
             if (commentSection.style.display === "none") {
                 commentSection.style.display = "block";
             } else {
@@ -52,6 +57,8 @@
         });
     });
 </script>
+
+
 {% endblock %}
 
 

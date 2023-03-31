@@ -1,0 +1,107 @@
+/* Reset some default styles */
+html, body, div, h1, h2, h3, h4, p, a {
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+  text-decoration: none;
+  color: inherit;
+}
+
+body {
+  background-color: #f0f4f7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+header {
+  width: 100%;
+  background-color: #80c2ff;
+  padding: 20px 0;
+}
+
+nav {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+}
+
+a {
+  color: #000;
+}
+
+.post {
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin: 30px;
+  padding: 20px;
+  max-width: 800px;
+  width: 100%;
+}
+
+.post h3 {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.post p {
+  margin-bottom: 20px; /* Add space between post text and buttons-container */
+}
+
+.post img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+  margin-top: 10px;
+  margin-bottom: 20px; /* Add space between post image and buttons-container */
+}
+
+.comment-link {
+  color: #80c2ff;
+  font-weight: bold;
+  font-size: 0.8em; /* Further reduce font size */
+}
+
+.comment-section {
+  margin-top: 20px;
+}
+
+.comment-section p {
+  margin-bottom: 10px;
+}
+
+form {
+  margin-top: 20px;
+}
+
+form button {
+  background-color: #80c2ff;
+  border: none;
+  border-radius: 3px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.6em; /* Further reduce font size */
+  padding: 3px 6px; /* Further adjust padding */
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px; /* Adjust gap between buttons and comment link */
+  align-items: center;
+}
+
+.buttons-container form {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Decrease space between button and span */
+  margin: 0;
+}
+
+
+  
