@@ -6,6 +6,15 @@ from .models import Post, Comment, Like, Follow, Vote
 from .forms import PostForm, CommentForm
 from django.contrib.auth.decorators import user_passes_test
 
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+
+
+
 def signup(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -36,9 +45,10 @@ def logout_view(request):
 def home(request):
     posts = Post.objects.all()
     post_form = PostForm()
+    following_users = [follow.followed_user for follow in request.user.following.all()]
     comment_form = CommentForm()
     post_likes = {post.id: post.like_count() for post in posts}
-    return render(request, 'home.html', {'posts': posts, 'post_form': post_form, 'comment_form': comment_form, 'post_likes': post_likes})
+    return render(request, 'home.html', {'posts': posts, 'post_form': post_form, 'comment_form': comment_form, 'post_likes': post_likes, 'following_users': following_users})
 
 
 @login_required
@@ -91,3 +101,41 @@ def vote_post(request, post_id):
 @user_passes_test(lambda user: not user.is_authenticated, login_url='home', redirect_field_name=None)
 def landing(request):
     return render(request, 'landing.html')
+
+# views.py
+
+
+@login_required
+def follow_user(request, username):
+    user = get_object_or_404(User, username=username)
+    
+    # Check if the user is already following the other user
+    if not Follow.objects.filter(user=request.user, followed_user=user).exists():
+        follow = Follow(user=request.user, followed_user=user)
+        follow.save()
+    
+    return HttpResponseRedirect(reverse('profile', args=[username]))
+
+
+
+@login_required
+def unfollow_user(request, username):
+    user = get_object_or_404(User, username=username)
+    follow = get_object_or_404(Follow, user=request.user, followed_user=user)
+    follow.delete()
+    return HttpResponseRedirect(reverse('profile', args=[username]))
+
+
+# views.py
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def following_posts(request):
+    followed_users = request.user.following.values_list('followed_user', flat=True)
+    posts = Post.objects.filter(user__in=followed_users).order_by('-created_at')
+    return render(request, 'following_posts.html', {'posts': posts})
+
+def profile(request, username):
+    user = get_object_or_404(User, username=username)
+    return render(request, 'profile.html', {'user': user})
+

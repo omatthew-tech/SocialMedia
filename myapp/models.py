@@ -31,6 +31,6 @@ class Vote(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 class Follow(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following')
-    followed_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followers')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following', related_query_name='follower')
+    followed_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followers', related_query_name='followed')
     created_at = models.DateTimeField(auto_now_add=True)
