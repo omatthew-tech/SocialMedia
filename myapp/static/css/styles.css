@@ -103,5 +103,99 @@ form button {
   margin: 0;
 }
 
+.eye-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+}
+
+.eye {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background-color: white;
+  border: 2px solid black;
+  border-radius: 50%;
+}
+
+.pupil {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background-color: black;
+  border-radius: 50%;
+  top: 35%;
+  left: 35%;
+}
+
+.help-text {
+  font-size: 0.8em;
+  color: #666;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.error {
+  font-size: 0.8em;
+  color: #ff0000;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.field-container {
+  display: flex;
+  align-items: center;
+}
+
+.field-container label {
+  width: 150px; /* Adjust this value based on the maximum width you want for the labels */
+}
+
+.form-group input {
+  flex-grow: 1;
+}
+
+
+/* Add the following CSS rules to your styles.css file */
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-toggle {
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-menu a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-menu a:hover {
+  background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+.dropdown:hover .dropdown-toggle {
+  background-color: #3e8e41;
+}
+
+
 
   

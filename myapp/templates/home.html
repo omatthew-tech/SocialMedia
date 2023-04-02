@@ -27,26 +27,7 @@
 
         <h4><a href="#" class="comment-link">Comment</a></h4>
 
-        {% if request.user != post.user %}
-    {% if post.user in following_users %}
-        <form action="{% url 'unfollow_user' post.user.username %}" method="POST">
-            {% csrf_token %}
-            <button type="submit">Unfollow</button>
-        </form>
-    {% else %}
-        <form action="{% url 'follow_user' post.user.username %}" method="POST">
-            {% csrf_token %}
-            <button type="submit">Follow</button>
-        </form>
-    {% endif %}
-{% endif %}
-
-
-
-    
-    
-
-    
+        
 
 
     </div>

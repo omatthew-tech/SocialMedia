@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Edit Profile</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            {% for field in form %}
+                <div class="field-container">
+                    <label for="{{ field.auto_id }}">{{ field.label }}</label>
+                    {{ field }}
+                </div>
+            {% endfor %}
+        </div>
+        <button type="submit">Save</button>
+    </form>
+{% endblock %}
+
+
+{% block extra_css %}
+
+
+<style>
+    
+
+    .field-container {
+    display: flex;
+    align-items: center;
+}
+
+.field-container label {
+    width: 150px; /* Adjust this value based on the maximum width you want for the labels */
+}
+
+.form-group input {
+    flex-grow: 1;
+}
+
+</style>
+{% endblock %}
+
+
+

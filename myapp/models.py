@@ -34,3 +34,15 @@ class Follow(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following', related_query_name='follower')
     followed_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followers', related_query_name='followed')
     created_at = models.DateTimeField(auto_now_add=True)
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=30, null=True, blank=True)
+    last_name = models.CharField(max_length=30, null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
+    twitter_link = models.URLField(null=True, blank=True)
+    instagram_link = models.URLField(null=True, blank=True)
+    personal_website = models.URLField(null=True, blank=True)
+
+
+    

@@ -13,6 +13,9 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
+from .forms import ProfileForm
+from .models import Profile
+
 
 
 def signup(request):
@@ -85,7 +88,7 @@ def like_post(request, post_id):
     else:
         like = Like(post=post, user=request.user)
         like.save()
-    return redirect('home')
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
 
 @login_required
 def vote_post(request, post_id):
@@ -96,7 +99,7 @@ def vote_post(request, post_id):
     else:
         vote = Vote(post=post, user=request.user)
         vote.save()
-    return redirect('home')
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
 
 @user_passes_test(lambda user: not user.is_authenticated, login_url='home', redirect_field_name=None)
 def landing(request):
@@ -138,4 +141,19 @@ def following_posts(request):
 def profile(request, username):
     user = get_object_or_404(User, username=username)
     return render(request, 'profile.html', {'user': user})
+
+@login_required
+def edit_profile(request):
+    user = request.user
+    user_profile, created = Profile.objects.get_or_create(user=user)
+
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=user_profile)
+        if form.is_valid():
+            form.save()
+            return redirect('edit_profile')
+    else:
+        form = ProfileForm(instance=user_profile)
+
+    return render(request, 'edit_profile.html', {'form': form})
 
