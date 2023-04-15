@@ -20,4 +20,19 @@ function getRandomPosition() {
   if (!document.querySelector('body').classList.contains('logged-in')) {
     setInterval(animateEye, 2000);
   }
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
   

@@ -16,6 +16,13 @@ from django.urls import reverse
 from .forms import ProfileForm
 from .models import Profile
 
+from .models import FriendRequest
+
+from .models import Follow, FriendRequest
+
+from django.contrib.auth.models import User
+from .models import Follow
+
 
 
 def signup(request):
@@ -105,28 +112,6 @@ def vote_post(request, post_id):
 def landing(request):
     return render(request, 'landing.html')
 
-# views.py
-
-
-@login_required
-def follow_user(request, username):
-    user = get_object_or_404(User, username=username)
-    
-    # Check if the user is already following the other user
-    if not Follow.objects.filter(user=request.user, followed_user=user).exists():
-        follow = Follow(user=request.user, followed_user=user)
-        follow.save()
-    
-    return HttpResponseRedirect(reverse('profile', args=[username]))
-
-
-
-@login_required
-def unfollow_user(request, username):
-    user = get_object_or_404(User, username=username)
-    follow = get_object_or_404(Follow, user=request.user, followed_user=user)
-    follow.delete()
-    return HttpResponseRedirect(reverse('profile', args=[username]))
 
 
 # views.py
@@ -138,9 +123,17 @@ def following_posts(request):
     posts = Post.objects.filter(user__in=followed_users).order_by('-created_at')
     return render(request, 'following_posts.html', {'posts': posts})
 
+
+
 def profile(request, username):
     user = get_object_or_404(User, username=username)
-    return render(request, 'profile.html', {'user': user})
+    is_following = False
+
+    if request.user.is_authenticated:
+        is_following = Follow.objects.filter(user=request.user, followed_user=user).exists()
+
+    return render(request, 'profile.html', {'user': user, 'is_following': is_following})
+
 
 @login_required
 def edit_profile(request):
@@ -156,4 +149,48 @@ def edit_profile(request):
         form = ProfileForm(instance=user_profile)
 
     return render(request, 'edit_profile.html', {'form': form})
+
+
+@login_required
+def requests(request):
+    friend_requests = FriendRequest.objects.filter(to_user=request.user)
+    return render(request, 'requests.html', {'friend_requests': friend_requests})
+
+@login_required
+def accept_friend_request(request, request_id):
+    friend_request = get_object_or_404(FriendRequest, id=request_id, to_user=request.user)
+    from_user_profile = Profile.objects.get(user=friend_request.from_user)
+    to_user_profile = Profile.objects.get(user=friend_request.to_user)
+    from_user_profile.friends.add(to_user_profile)
+    to_user_profile.friends.add(from_user_profile)
+    friend_request.delete()
+    return redirect('requests')
+
+
+
+@login_required
+def follow(request, username):
+    user_to_follow = get_object_or_404(User, username=username)
+    follow, created = Follow.objects.get_or_create(user=request.user, followed_user=user_to_follow)
+    if not created:
+        follow.delete()
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+
+@login_required
+def unfollow(request, username):
+    user_to_unfollow = get_object_or_404(User, username=username)
+    try:
+        follow = Follow.objects.get(user=request.user, followed_user=user_to_unfollow)
+        follow.delete()
+    except Follow.DoesNotExist:
+        pass
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+
+@login_required
+def send_friend_request(request, username):
+    to_user = get_object_or_404(User, username=username)
+    friend_request, created = FriendRequest.objects.get_or_create(from_user=request.user, to_user=to_user)
+    if not created:
+        friend_request.delete()
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
 

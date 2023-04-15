@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Friend Requests</h1>
+    {% for request in friend_requests %}
+        <div>
+            <p>{{ request.from_user }} wants to be your friend.</p>
+            <form method="post" action="{% url 'accept_friend_request' request.id %}">
+                {% csrf_token %}
+                <button type="submit">Accept</button>
+            </form>
+        </div>
+    {% empty %}
+        <p>No friend requests.</p>
+    {% endfor %}
+{% endblock %}
